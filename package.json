@@ -1,0 +1,21 @@
+{
+  "name": "europe-rp1-atlas",
+  "version": "0.0.1",
+  "description": "Reporting Period 1 in TopoJSON (data from Natural Earth.)",
+  "keywords": [
+    "topojson",
+    "geojson",
+    "shapefile"
+  ],
+  "author": {
+    "name": "Enrico Spinielli",
+    "url": "enrico.spinielli.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/euctrl-pru/dashboard.git"
+  },
+  "devDependencies": {
+    "topojson": ">=1.6.2 <2"
+  }
+}
