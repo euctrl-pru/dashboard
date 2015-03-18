@@ -11,7 +11,6 @@
 
 
 
-<!--
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
@@ -29,28 +28,28 @@
 
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.css" />
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.js"></script>
+
+<!--
+  <script type="text/javascript" src="./js/jquery-1.11.2.min.js"></script>
+
+  <script type="text/javascript" src="./js/d3.min.js"></script>
+  <script type="text/javascript" src="./js/queue.min.js"></script>
+  <script type="text/javascript" src="./js/topojson.min.js"></script>
+
+  <script type="text/javascript" src="./js/crossfilter.min.js"></script>
+  <script type="text/javascript" src="./js/dc.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="./css/dc.css">
+
+  <script type="text/javascript" src="./js/moment.min.js"></script>
+
+  <script type="text/javascript" src="./js/underscore-min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="./css/select2.css" />
+  <script type="text/javascript" src="./js/select2.min.js"></script>
 -->
-
-  <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
-
-  <script type="text/javascript" src="js/d3.min.js"></script>
-  <script type="text/javascript" src="js/queue.min.js"></script>
-  <script type="text/javascript" src="js/topojson.min.js"></script>
-
-  <script type="text/javascript" src="js/crossfilter.min.js"></script>
-  <script type="text/javascript" src="js/dc.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="css/dc.css">
-
-  <script type="text/javascript" src="js/moment.min.js"></script>
-
-  <script type="text/javascript" src="js/underscore-min.js"></script>
-
-  <link rel="stylesheet" type="text/css" href="css/select2.css" />
-  <script type="text/javascript" src="js/select2.min.js"></script>
-
   <!-- local files -->
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="dashboard.css">
+  <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="./dashboard.css">
   <script type="text/javascript" src="js/colorbrewer.js"></script>
 
 </head>
@@ -73,7 +72,7 @@
     </ul>
   </p>
 
-  <p>Some questions to consider: How do delay patterns differ between <a href="javascript:filter([[4, 7], null, null, null])">summer</a> and <a href="javascript:filter([[21, 24], null, null, null])">winter</a>?
+  <p>Some questions to consider: How do delay patterns differ between <a href="javascript:seasonChart.filterAll();seasonChart.filter('Summer');dc.redrawAll()">summer</a> and <a href="javascript:seasonChart.filterAll();seasonChart.filter('Winter');dc.redrawAll()">winter</a>?
   </p>
 
   <div class="row">

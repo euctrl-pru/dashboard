@@ -42,6 +42,18 @@ queue()
     var borders = topojson.mesh(euplus, euplus.objects.countries, function(a, b) { return a.id !== b.id; });
     var airports = topojson.feature(ads, ads.objects.airports).features;
 
+    console.log(JSON.stringify(codes)
+      .replace("[", "[\n\t")
+      .replace(/}\,/g,"},\n\t")
+      .replace("]","\n]")
+    );
+
+    console.log(JSON.stringify(euctrl)
+      .replace("[", "[\n\t")
+      .replace(/}\,/g,"},\n\t")
+      .replace("]","\n]")
+    );
+
     countries.forEach(function(d) {
       codes.some(function(n) {
         if (d.id == n.id) return d.properties.icao = n.icao;
@@ -68,7 +80,7 @@ queue()
       return d.country;
     });
     var totalPerCountry = countryDimension.group().reduceSum(function(d) {return d.total_delay;});
-    // print_filter(totalPerCountry);
+    print_filter(totalPerCountry);
 
     // DIMENSION: year
     var yearlyDimension = ndx.dimension(function(d) {
