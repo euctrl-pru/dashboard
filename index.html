@@ -1,18 +1,10 @@
-<!DOCTYPE html>
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="keywords" content="performance, air transport, flights, europe, cost efficiency">
-
-	<!-- 100 <  should be < 150 characters -->
-	<meta name="description" content="Performance Review Unit interactive dashboard on European Air Transport.">
-
-	<title>An Interactive PRU Dashboard</title>
-
-
-
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-
+---
+layout: default
+title: Dashboard
+permalink: /dashboard/
+excerpt: Performance Review Unit interactive dashboard on European Air Transport.
+keywords: performance, air transport, flights, europe, cost efficiency
+---
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.18/topojson.min.js"></script>
@@ -25,7 +17,6 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>
-
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.css" />
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.js"></script>
 
@@ -46,38 +37,20 @@
 
   <link rel="stylesheet" type="text/css" href="./css/select2.css" />
   <script type="text/javascript" src="./js/select2.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css"> 
 -->
+
   <!-- local files -->
-  <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="./dashboard.css">
   <script type="text/javascript" src="js/colorbrewer.js"></script>
 
-</head>
-
-<body>
 <div class="container">
-  <h1>PRU Dashboard</h1>
-  <h2>Airport ATFM Arrival Delay</h2>
-  <p>Dimensions:
-    <ul>
-      <li>country (first 2 letter of Airport ICAO ID, as a first approximation);</li>
-      <li>year;</li>
-      <li>month;</li>
-      <li>type of delay (capacity / staffing, ATC Other, Weather, Other)</li>
-    </ul>
-  </p>
-  <p>Measures:
-    <ul>
-      <li>Delay (min per arrival)</li>
-    </ul>
-  </p>
-
+  <h3>Airport ATFM Arrival Delay</h3>
   <p>Some questions to consider: How do delay patterns differ between <a href="javascript:seasonChart.filterAll();seasonChart.filter('Summer');dc.redrawAll()">summer</a> and <a href="javascript:seasonChart.filterAll();seasonChart.filter('Winter');dc.redrawAll()">winter</a>?
   </p>
 
   <div class="row">
     <div id="eu-chart" class="dc-chart">
-      <div class="title">Map</div>
+      <strong>Map</strong>
       <a class="reset" href="javascript:euChart.filterAll();dc.redrawAll();"
          style="display: none;">reset</a>
       <p>TODO: overlay chart</p>
@@ -87,18 +60,19 @@
 
   <div class="row">
     <div id="country-chart" class="dc-chart">
-      <Strong>Country</strong>
+      <strong>Country</strong>
       <a class="reset" href="javascript:countryChart.filterAll();dc.redrawAll();"
          style="display: none;">reset</a>
       <div class="clearfix"></div>
-
     </div>
+
     <div id="season-chart" class="dc-chart">
       <strong>Season</strong>
       <a class="reset" href="javascript:seasonChart.filterAll();dc.redrawAll();"
          style="display: none;">reset</a>
       <div class="clearfix"></div>
     </div>
+
     <div id="delay-chart" class="dc-chart">
       <strong>Delay</strong>
       <div class="clearfix"></div>
@@ -122,28 +96,17 @@
 <!-- LOAD IT HERE to have global references, i.e. div's have to be defined before the .js is loaded -->
   <script type="text/javascript" src="dashboard.js"></script>
 
+  </div>
 
-  <footer>
-    <p>Libraries:  <a href="http://jquery.com/">jQuery</a> <span id="jquery-version"></span>;
-        <a href="http://d3js.org">D3.js</a> <span id="d3js-version"></span>;
-        <a href="https://github.com/mbostock/topojson/wiki">topojson</a> <span id="topojson-version"></span>;
-        <a href="https://github.com/mbostock/queue">queue</a> <span id="queue-version"></span>;
-        <a href="http://square.github.io/crossfilter/">Crossfilter</a> <span id="crossfilter-version"></span>;
-        <a href="http://dc-js.github.io/dc.js/">dc.js</a> <span id="dcjs-version"></span>;
-        <a href="http://momentjs.com/">Moment.js</a> <span id="momentjs-version"></span>;
-        <a href="http://underscorejs.org/">Underscore</a> <span id="underscore-version"></span>;
-        <a href="https://select2.github.io/">Select2</a> <span id="select2-version"></span>
-    </p>
-
-    <span style="float:right;">
-      Released to you by the <a href="https://www.eurocontrol.int/articles/performance-review-unit">Performance Review Unit</a>.
-    </span>
-    Copyright 2015 <a href="http://eurocontrol.int">Eurocontrol</a>
-  </footer>
-
-</div>
-</body>
-</html>
-
-
-
+  <div class="container">
+  <p class="muted credit" style="font-size: x-small; float: right">
+    Libraries:  <a href="http://jquery.com/">jQuery</a> <span id="jquery-version"></span>;
+      <a href="http://d3js.org">D3.js</a> <span id="d3js-version"></span>;
+      <a href="https://github.com/mbostock/topojson/wiki">topojson</a> <span id="topojson-version"></span>;
+      <a href="https://github.com/mbostock/queue">queue</a> <span id="queue-version"></span>;
+      <a href="http://square.github.io/crossfilter/">Crossfilter</a> <span id="crossfilter-version"></span>;
+      <a href="http://dc-js.github.io/dc.js/">dc.js</a> <span id="dcjs-version"></span>;
+      <a href="http://momentjs.com/">Moment.js</a> <span id="momentjs-version"></span>;
+      <a href="http://underscorejs.org/">Underscore</a> <span id="underscore-version"></span>;
+      <a href="https://select2.github.io/">Select2</a> <span id="select2-version"></span>
+  </p></div>

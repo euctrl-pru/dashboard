@@ -1,22 +1,22 @@
 <style>
 
-@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700);
-body {
+/*@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700);*/
+/*body {
   font-family: "Helvetica Neue";
   margin: 40px auto;
   width: 960px;
   min-height: 2000px;
-}
+}*/
 
 footer {
   padding: 2em 0 1em 0;
   font-size: 12px;
 }
 
-h1 + h2 {
+/*h1 + h2 {
   margin-top: 0;
 }
-h2 {
+*//*h2 {
   font-weight: 400;
   font-size: 28px;
 }
@@ -24,15 +24,15 @@ h1, h2 {
   font-family: "Yanone Kaffeesatz";
   text-rendering: optimizeLegibility;
 }
-
+*/
 .dc-chart {
   margin-bottom: 15px;
 }
-.dc-chart .title {
+/*.dc-chart .title {
   font-weight: bold;
   font-size: 18px;
 }
-
+*/
 .reset {
   padding-left: 1em;
   font-size: smaller;

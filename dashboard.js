@@ -172,7 +172,7 @@ queue()
       // .gap(1)
       .elasticY(true) // rescale Y axis when filtering
       .brushOn(false)
-      .x(d3.time.scale().domain([minYear-1, maxYear+1]))
+      .x(d3.time.scale().domain([minYear-0.55, maxYear+0.55]))
       .yAxisLabel("Delay per arrival (min)")
       .renderHorizontalGridLines(true);
     
