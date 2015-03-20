@@ -42,23 +42,26 @@ queue()
     var borders = topojson.mesh(euplus, euplus.objects.countries, function(a, b) { return a.id !== b.id; });
     var airports = topojson.feature(ads, ads.objects.airports).features;
 
-    console.log(JSON.stringify(codes)
-      .replace("[", "[\n\t")
-      .replace(/}\,/g,"},\n\t")
-      .replace("]","\n]")
-    );
+    // console.log(JSON.stringify(codes)
+    //   .replace("[", "[\n\t")
+    //   .replace(/}\,/g,"},\n\t")
+    //   .replace("]","\n]")
+    // );
 
-    console.log(JSON.stringify(euctrl)
-      .replace("[", "[\n\t")
-      .replace(/}\,/g,"},\n\t")
-      .replace("]","\n]")
-    );
+    // console.log(JSON.stringify(euctrl)
+    //   .replace("[", "[\n\t")
+    //   .replace(/}\,/g,"},\n\t")
+    //   .replace("]","\n]")
+    // );
 
     countries.forEach(function(d) {
       codes.some(function(n) {
         if (d.id == n.id) return d.properties.icao = n.icao;
       });
     });
+
+    /* since its a csv file we need to format the data a bit */
+    var df = d3.time.format('%m/%Y');
 
     delays.forEach(function(d){
       d.country = d.ad.substring(0, 2);
@@ -74,25 +77,82 @@ queue()
     });
 
     var ndx = crossfilter(delays);
+    var all = ndx.groupAll();
 
     // DIMENSION: country
-    var countryDimension = ndx.dimension(function(d) {
-      return d.country;
-    });
+    var countryDimension = ndx.dimension(function(d) {return d.country;});
     var totalPerCountry = countryDimension.group().reduceSum(function(d) {return d.total_delay;});
-    print_filter(totalPerCountry);
+    // print_filter(totalPerCountry);
 
     // DIMENSION: year
-    var yearlyDimension = ndx.dimension(function(d) {
-      return d.year;
-    });
+    var yearlyDimension = ndx.dimension(function(d) {return d.year;});
+
+    // maintain running tallies by year as filters are applied or removed
+    var yearlyPerformanceGroup = yearlyDimension.group().reduce(
+        /* callback for when data is added to the current filter results */
+        function (p, v) {
+            p.arrivals        += v.atfm_arrivals;
+            p.total_delay     += v.total_delay;
+            p.tot_atc_delay       += v.atc_delay;
+            p.tot_atc_other_delay += v.atc_other_delay;
+            p.tot_weather_delay   += v.weather_delay;
+            p.tot_other_delay     += v.other_delay;
+
+            p.avg_delay           = p.arrivals ? p.total_delay / p.arrivals         : 0;
+            p.avg_atc_delay       = p.arrivals ? p.tot_atc_delay / p.arrivals       : 0;
+            p.avg_atc_other_delay = p.arrivals ? p.tot_atc_other_delay / p.arrivals : 0;
+            p.avg_weather_delay   = p.arrivals ? p.tot_weather_delay / p.arrivals   : 0;
+            p.avg_other_delay     = p.arrivals ? p.tot_other_delay / p.arrivals     : 0;
+            return p;
+        },
+        /* callback for when data is removed from the current filter results */
+        function (p, v) {
+            p.arrivals        -= v.atfm_arrivals;
+            p.total_delay     -= v.total_delay;
+            p.tot_atc_delay       -= v.atc_delay;
+            p.tot_atc_other_delay -= v.atc_other_delay;
+            p.tot_weather_delay   -= v.weather_delay;
+            p.tot_other_delay     -= v.other_delay;
+
+            p.avg_delay           = p.arrivals ? p.total_delay / p.arrivals         : 0;
+            p.avg_atc_delay       = p.arrivals ? p.tot_atc_delay / p.arrivals       : 0;
+            p.avg_atc_other_delay = p.arrivals ? p.tot_atc_other_delay / p.arrivals : 0;
+            p.avg_weather_delay   = p.arrivals ? p.tot_weather_delay / p.arrivals   : 0;
+            p.avg_other_delay     = p.arrivals ? p.tot_other_delay / p.arrivals     : 0;
+            return p;
+        },
+        /* initialize p */
+        function () {
+            return {
+              arrivals           : 0,
+              total_delay        : 0,
+              tot_atc_delay      : 0,
+              tot_atc_other_delay: 0,
+              tot_weather_delay  : 0,
+              tot_other_delay    : 0,
+
+              avg_delay          : 0,
+              avg_atc_delay      : 0,
+              avg_atc_other_delay: 0,
+              avg_weather_delay  : 0,
+              avg_other_delay    : 0
+            };
+        }
+    );
+    // print_filter(yearlyPerformanceGroup);
+
     var yearGroup = yearlyDimension.group();
-    var averagedTotalPerYear = yearlyDimension.group().reduceSum(function(d) {return d.total_delay / d.atfm_arrivals;});
+
+    var totalPerYear = yearlyDimension.group().reduceSum(function(d) {return d.total_delay;});
     // print_filter(totalPerYear);
     var atc_delay = yearlyDimension.group().reduceSum(function(d) {return d.atc_delay / d.atfm_arrivals;});
+    // print_filter(atc_delay);
     var atc_other_delay = yearlyDimension.group().reduceSum(function(d) {return d.atc_other_delay / d.atfm_arrivals;});
+    // print_filter(atc_other_delay);
     var weather_delay = yearlyDimension.group().reduceSum(function(d) {return d.weather_delay / d.atfm_arrivals;});
+    // print_filter(weather_delay);
     var other_delay = yearlyDimension.group().reduceSum(function(d) {return d.other_delay / d.atfm_arrivals;});
+    // print_filter(other_delay);
 
 
     // DIMENSION: month
@@ -158,22 +218,22 @@ queue()
       .width(500).height(200)
       .margins({top: 10, right: 50, bottom: 30, left: 40})
       .dimension(yearlyDimension)
-      // .group(averagedTotalPerYear)
-      // .valueAccessor(function(d) {
-      //   return d.value/10000.0;
-      // })
-      .group(weather_delay, "Weather")
-      .stack(atc_other_delay, "ATC Other", function(d) {return d.value;})
-      .stack(atc_delay, "ATC", function (d) { return d.value; })
-      .stack(other_delay, "Other", function(d){return d.value;})
+      .group(yearlyPerformanceGroup, "Weather")
+      .valueAccessor(function(d) {return d.value.avg_weather_delay;})
+      .stack(yearlyPerformanceGroup, "ATC Other", function(d) {return d.value.avg_atc_other_delay;})
+      .stack(yearlyPerformanceGroup, "ATC", function (d) { return d.value.avg_atc_delay; })
+      .stack(yearlyPerformanceGroup, "Other", function(d){return d.value.avg_other_delay;})
       .legend(dc.legend().x(350).y(0).itemHeight(13).gap(5))
       // .elasticY(true)
       .centerBar(true)
-      // .gap(1)
+      .gap(2)
       .elasticY(true) // rescale Y axis when filtering
       .brushOn(false)
-      .x(d3.time.scale().domain([minYear-0.55, maxYear+0.55]))
+      .x(d3.time.scale().domain([minYear-1, maxYear+1]))
       .yAxisLabel("Delay per arrival (min)")
+      .title(function(d) {
+          return d.x + ": " + numberFormat(d.y) + " of " + numberFormat(d.data.value.avg_delay) + ".";
+      })
       .renderHorizontalGridLines(true);
     
     yearlyDelaysChart.xAxis().tickFormat(function (v) { return Math.floor(v); });
@@ -182,8 +242,7 @@ queue()
     
     
   
-    //Determine the current version of dc with `dc.version`
-    d3.selectAll('#jquery-version').text($.fn.jquery);
+    //Determine the versions of the libraries used
     d3.selectAll('#d3js-version').text(d3.version);
     d3.selectAll('#topojson-version').text(topojson.version);
     d3.selectAll('#queue-version').text(queue.version);
@@ -191,7 +250,10 @@ queue()
     d3.selectAll('#dcjs-version').text(dc.version);
     d3.selectAll('#momentjs-version').text(moment.version);
     d3.selectAll('#underscore-version').text(_.VERSION);
-    d3.selectAll('#select2-version').text("3.5.2");
+
+    // not needed if select2 is not used. NOTE: see relevant ids in index.html!
+    // d3.selectAll('#select2-version').text("3.5.2");
+    // d3.selectAll('#jquery-version').text($.fn.jquery);
 
 
     // draw!
