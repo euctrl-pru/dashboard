@@ -1,9 +1,9 @@
 'use strict';
 
+var loading = d3.selectAll(".loading");
 var countryChart = dc.pieChart('#country-chart');
 var seasonChart = dc.pieChart('#season-chart');
 // var euChart  = dc.geoChoroplethChart("#eu-chart");
-
 
 var dsv = d3.dsv(";", "text/plain");
 var dateFormat = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ");
@@ -41,6 +41,7 @@ queue()
     var countries = topojson.feature(euplus, euplus.objects.countries).features;
     var borders = topojson.mesh(euplus, euplus.objects.countries, function(a, b) { return a.id !== b.id; });
     var airports = topojson.feature(ads, ads.objects.airports).features;
+
 
     // console.log(JSON.stringify(codes)
     //   .replace("[", "[\n\t")
@@ -196,6 +197,7 @@ queue()
     //             return "Country: " + d.key + "\nTotal ATFM arrival delay: " + numberFormat(d.value ? d.value : 0) + "min";
     //         });
 
+    loading.classed("hidden", true);
 
     countryChart.width(180)
       .height(180)
