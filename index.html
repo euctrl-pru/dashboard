@@ -44,21 +44,37 @@ keywords: performance, air transport, flights, europe, cost efficiency
   <link rel="stylesheet" type="text/css" href="./dashboard.css" />
   <script type="text/javascript" src="js/colorbrewer.js"></script>
 
+
+<!-- ##################################################################### -->
+<h1 id="traffic">Traffic</h1>
+
+<h2>IFR Flights</h2>
+<div class="container">
+  <div class="row">
+    <div id="ifr-chart" class="dc-chart">
+      <strong>Average Daily IFR Flights</strong>
+      <div class="loading">Loading...</div>
+      <a class="reset" href="javascript:ifrChart.filterAll();dc.redrawAll();"
+         style="display: none;">reset</a>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+
+<!-- ##################################################################### -->
+<h1 id="safety">Safety</h1>
+<h2>Separation Minima Infringements (SMI)</h2>
+
+
+<!-- ##################################################################### -->
+<h1 id="capacity">Capacity</h1>
+<h2>En Route ATFM Delay</h2>
 <div class="container">
   <h3>Airport ATFM Arrival Delay</h3>
   <p>Some questions to consider: How do delay patterns differ between <a href="javascript:seasonChart.filterAll();seasonChart.filter('Summer');dc.redrawAll()">summer</a> and <a href="javascript:seasonChart.filterAll();seasonChart.filter('Winter');dc.redrawAll()">winter</a>?
   </p>
-
-  <div class="row">
-    <div id="eu-chart" class="dc-chart">
-      <strong>Map</strong>
-      <div class="loading">Loading...</div>
-      <a class="reset" href="javascript:euChart.filterAll();dc.redrawAll();"
-         style="display: none;">reset</a>
-      <p>TODO: overlay chart</p>
-      <div class="clearfix"></div>
-    </div>
-  </div>
 
   <div class="row">
     <div id="country-chart" class="dc-chart">
@@ -81,36 +97,37 @@ keywords: performance, air transport, flights, europe, cost efficiency
       <div class="clearfix"></div>
     </div>
   </div>
-
-
-<!--   <div class="row">
-    <div>
-        <div class="dc-data-count">
-            <span class="filter-count"></span> selected out of <span class="total-count"></span> records | <a
-                href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
-        </div>
-    </div>
-    <table class="table table-hover dc-data-table">
-    </table>
-  </div>
- -->
   <div class="clearfix"></div>
+</div>
 
-<!-- LOAD IT HERE to have global references, i.e. div's have to be defined before the .js is loaded -->
+
+<!-- ##################################################################### -->
+<h1>Environment</h1>
+
+<!-- ##################################################################### -->
+<h1>Cost-Efficiency</h1>
+
+
+
+
+
+
+
+
+  <!-- LOAD IT HERE to have global references, i.e. div's have to be defined before the .js is loaded -->
   <script type="text/javascript" src="dashboard.js"></script>
 
-  </div>
-
   <div class="container">
-  <p class="muted credit" style="font-size: x-small; float: right">
-    Libraries:
-      <a href="http://d3js.org">D3.js</a> <span id="d3js-version"></span>.
-      <a href="https://github.com/mbostock/topojson/wiki">topojson</a> <span id="topojson-version"></span>.
-      <a href="https://github.com/mbostock/queue">queue</a> <span id="queue-version"></span>.
-      <a href="http://square.github.io/crossfilter/">Crossfilter</a> <span id="crossfilter-version"></span>.
-      <a href="http://dc-js.github.io/dc.js/">dc.js</a> <span id="dcjs-version"></span>.
-      <a href="http://momentjs.com/">Moment.js</a> <span id="momentjs-version"></span>.
-      <a href="http://underscorejs.org/">Underscore</a> <span id="underscore-version"></span>.
-<!--       <a href="https://select2.github.io/">Select2</a> <span id="select2-version"></span>.
-      <a href="http://jquery.com/">jQuery</a> <span id="jquery-version"></span>.
- -->  </p></div>
+    <p class="muted credit" style="font-size: x-small; float: right">
+      Libraries:
+        <a href="http://d3js.org">D3.js</a> <span id="d3js-version"></span>.
+        <a href="https://github.com/mbostock/topojson/wiki">topojson</a> <span id="topojson-version"></span>.
+        <a href="https://github.com/mbostock/queue">queue</a> <span id="queue-version"></span>.
+        <a href="http://square.github.io/crossfilter/">Crossfilter</a> <span id="crossfilter-version"></span>.
+        <a href="http://dc-js.github.io/dc.js/">dc.js</a> <span id="dcjs-version"></span>.
+        <a href="http://momentjs.com/">Moment.js</a> <span id="momentjs-version"></span>.
+        <a href="http://underscorejs.org/">Underscore</a> <span id="underscore-version"></span>.
+        <!-- <a href="https://select2.github.io/">Select2</a> <span id="select2-version"></span>.
+        <a href="http://jquery.com/">jQuery</a> <span id="jquery-version"></span>. -->
+    </p>
+  </div>
