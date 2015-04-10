@@ -183,6 +183,7 @@ var compose2 = dc.lineChart(ifrChart)
     .slicesCap(8) // display only subset, 8, of slices
     .colors(d3.scale.category20b())
     // .colors(colorbrewer.Paired[9]) // NOTE: strangely with latest dc.js it does not work
+    .renderTitle(false)
     .dimension(countryDimension)
     .group(totalPerCountry);
 
@@ -253,9 +254,25 @@ var compose2 = dc.lineChart(ifrChart)
     .dimension(yearlyDelayDimension)
     .group(yearlyDelayPerformanceGroup, "Weather")
     .valueAccessor(function(d) {return d.value.avg_weather_delay;})
+    .title(function(d) {
+      return d.key + ": " + numberFormat(d.value.avg_weather_delay) +
+              " out of " + numberFormat(d.value.avg_delay) + ".";
+    })
     .stack(yearlyDelayPerformanceGroup, "ATC Other", function(d) {return d.value.avg_atc_other_delay;})
+    .title("ATC Other", function(d) {
+      return d.key + ": " + numberFormat(d.value.avg_atc_other_delay) +
+              " out of " + numberFormat(d.value.avg_delay) + ".";
+    })
     .stack(yearlyDelayPerformanceGroup, "ATC", function (d) { return d.value.avg_atc_delay; })
+    .title("ATC", function(d) {
+      return d.key + ": " + numberFormat(d.value.avg_atc_delay) +
+              " out of " + numberFormat(d.value.avg_delay) + ".";
+    })
     .stack(yearlyDelayPerformanceGroup, "Other", function(d){return d.value.avg_other_delay;})
+    .title("Other", function(d) {
+      return d.key + ": " + numberFormat(d.value.avg_other_delay) +
+              " out of " + numberFormat(d.value.avg_delay) + ".";
+    })
     .legend(dc.legend().x(350).y(0).itemHeight(13).gap(5))
     // .elasticY(true)
     .centerBar(true)
@@ -264,9 +281,6 @@ var compose2 = dc.lineChart(ifrChart)
     .brushOn(false)
     .x(d3.time.scale().domain([minYearDelay - 1, maxYearDelay + 1]))
     .yAxisLabel("Delay per arrival (min)")
-    .title(function(d) {
-      return d.x + ": " + numberFormat(d.y) + " of " + numberFormat(d.value.avg_delay) + ".";
-    })
     .renderHorizontalGridLines(true);
   
   yearlyDelaysChart.xAxis().tickFormat(function (v) { return Math.floor(v); });
@@ -293,6 +307,7 @@ var compose2 = dc.lineChart(ifrChart)
     .radius(80)
     .innerRadius(20)
     .dimension(seasonDimension)
+    .renderTitle(false)
     .group(seasonGroup);
   
 
