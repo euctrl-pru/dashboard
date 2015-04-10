@@ -180,8 +180,9 @@ var compose2 = dc.lineChart(ifrChart)
     .height(180)
     .radius(80)
     .innerRadius(20)
-    .slicesCap(8) // display only subset of slices
-    .colors(colorbrewer.Paired[9])
+    .slicesCap(8) // display only subset, 8, of slices
+    .colors(d3.scale.category20b())
+    // .colors(colorbrewer.Paired[9]) // NOTE: strangely with latest dc.js it does not work
     .dimension(countryDimension)
     .group(totalPerCountry);
 
