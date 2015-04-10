@@ -15,6 +15,13 @@
 #eu-chart {
   width: 920px;
 }
+
+/* erase redundant non-data ink */
+#ifr-chart.dc-chart g.axis {
+  opacity: .38;
+}
+
+
 /* erase redundant non-data ink */
 #delay-chart.dc-chart g.axis {
   opacity: .38;

@@ -4,28 +4,24 @@ var loading = d3.selectAll(".loading");
 var countryChart = dc.pieChart('#country-chart');
 var seasonChart = dc.pieChart('#season-chart');
 var yearlyDelaysChart  = dc.barChart("#delay-chart");
-var ifrChart  = dc.lineChart("#ifr-chart");
+var ifrChart  = dc.compositeChart("#ifr-chart");
 
 var dsv = d3.dsv(";", "text/plain");
-var dateFormat = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ");
 var numberFormat = d3.format(".2f");
-var flightFormat = d3.format(".0fs");
 
 // from http://www.codeproject.com/Articles/693841/Making-Dashboards-with-Dc-js-Part-Using-Crossfil
-var print_filter = function(filter) {
-
+function print_filter(filter){
   var f = eval(filter);
-
   if (typeof(f.length) != "undefined") {} else {}
-  if (typeof(f.top) != "undefined") {f = f.top(Infinity);} else {}
-  if (typeof(f.dimension) != "undefined") {f = f.dimension(function(d) { return "";}).top(Infinity);} else {}
-  console.log(filter + "(" + f.length + ") = " + 
+  if (typeof(f.top) != "undefined") { f = f.top(Infinity); } else {}
+  if (typeof(f.dimension) != "undefined") { f = f.dimension(function(d) { return ""; }).top(Infinity); } else {}
+  console.log(filter + 
+    "(" + f.length + ") = " +
     JSON.stringify(f)
-    .replace("[", "[\n\t")
-    .replace(/}\,/g,"},\n\t")
-    .replace("]","\n]")
-  );
-};
+      .replace("[","[\n\t")
+      .replace(/}\,/g,"},\n\t")
+      .replace("]","\n]"));
+}
 
 
 
@@ -38,9 +34,6 @@ queue()
 
 // this gets executed once the files have been asynchronously read
 function ready(error, delays, ifr_ansp, ifr_monthly) {
-  /* since its a csv file we need to format the data a bit */
-  var df = d3.time.format('%m/%Y');
-
 
   // **************   IFR   **************
   ifr_ansp.forEach(function(d){
@@ -68,6 +61,9 @@ function ready(error, delays, ifr_ansp, ifr_monthly) {
   var minYearIfr = yearlyIfrDimension.bottom(1)[0].year;
   var maxYearIfr = yearlyIfrDimension.top(1)[0].year;
 
+  var avg = [];
+  avg[2007] = 26541.117486338797; // so to make % change for 2008 = zero
+
   // maintain running tallies by year as filters are applied or removed
   var yearlyIfrPerformanceGroup = yearlyIfrDimension.group().reduce(
     /* callback for when data is added to the current filter results */
@@ -75,6 +71,9 @@ function ready(error, delays, ifr_ansp, ifr_monthly) {
       p.flights += v.ifr_flights;
       p.days    += v.days;
       p.avg     = p.days ? p.flights / p.days : 0;
+      avg[v.year] = p.avg;
+      var t = (avg[v.year - 1]) ? avg[v.year - 1] : 1;
+      p.pc = 100 * (p.avg - t) / t;
       return p;
     },
     /* callback for when data is removed from the current filter results */
@@ -82,6 +81,7 @@ function ready(error, delays, ifr_ansp, ifr_monthly) {
       p.flights -= v.ifr_flights;
       p.days    -= v.days;
       p.avg     = p.days ? p.flights / p.days : 0;
+      p.pc      = 100* (p.avg - ref) / ref;
       return p;
     },
     /* initialize p */
@@ -89,40 +89,69 @@ function ready(error, delays, ifr_ansp, ifr_monthly) {
       return {
         flights : 0,
         days    : 0,
-        avg     : 0
+        avg     : 0,
+        pc      : 0
       };
     }
   );
-  print_filter(yearlyIfrPerformanceGroup);
+  // print_filter(yearlyIfrPerformanceGroup);
+  
+var compose1 =  dc.lineChart(ifrChart)
+      .brushOn(false)
+      .clipPadding(10)
+      .group(yearlyIfrPerformanceGroup, 'Average Daily IFR Flights')
+      .valueAccessor(function(d) {return d.value.avg / 1000;})
+      .renderArea(false)
+      .renderDataPoints(true)
+      .title(function(d) { return d.key + ': ' + d3.round(d.value.avg, 0) + ' flights';});
+      // .colors(d3.scale.ordinal().range(['blue', 'green', 'yellow']));
 
+
+var compose2 = dc.lineChart(ifrChart)
+      .dimension(yearlyIfrDimension)
+      .group(yearlyIfrPerformanceGroup, "YoY % change")
+      .valueAccessor(function(d) {return d.value.pc;})
+      .title(function(d){return d.key + ': ' + d3.round(d.value.pc, 1) + '%';})
+      .renderDataPoints(true)
+      .useRightYAxis(true)
+      .dashStyle([5,5]);
+
+// var zero = yearlyIfrDimension.group().reduceSum(function(d) {return 0;});
+// print_filter(zero);
+// var compose3 = dc.lineChart(ifrChart)
+//       .dimension(yearlyIfrDimension)
+//       .colors(d3.scale.ordinal().range(['black']))
+//       .group(zero, "zero % change")
+//       .valueAccessor(function(d) {return d.value;})
+//       .renderTitle(false)
+//       .renderLabel(false)
+//       .useRightYAxis(true);
 
 
   ifrChart
-    .width(400)
-    .height(200)
+    .width(500)
+    .height(300)
     .margins({top: 10, right: 50, bottom: 30, left: 40})
-    .x(d3.time.scale().domain([minYearIfr-0.5, maxYearIfr]))
-    .y(d3.scale.linear().domain([24, 28]))
-    .renderArea(false)
-    .brushOn(false)
-    .clipPadding(10)
-    .yAxisLabel("# of Flights (1000)")
     .xAxisLabel("Year")
-    .title(function(d){
-      return d.data.key
-        + "\nFlights: " + flightFormat(d.data.value.avg);
-    })
+    .x(d3.time.scale().domain([minYearIfr, maxYearIfr]))
+    .round(d3.time.year.round)
+    .xUnits(d3.time.years)
     .dimension(yearlyIfrDimension)
-    .group(yearlyIfrPerformanceGroup, 'Average Daily IFR Flights')
-    .valueAccessor(function(d) {return d.value.avg / 1000;});
+      .renderHorizontalGridLines(true)
+      .legend(dc.legend().x(70).y(10).itemHeight(13).gap(5))
+      .brushOn(false)
+    .y(d3.scale.linear().domain([20, 30]))      // NOTE: hardocded knowing the Y range
+    .rightY(d3.scale.linear().domain([-7, +3])) // NOTE: hardocded knowing the Y range
+    .yAxisLabel("Avg. daily IFR Flights (x1000)")
+    .rightYAxisLabel("year over year % change")
+    .colors(d3.scale.ordinal().range(['blue', 'green', 'yellow']))
+    .shareColors(true)
+    .shareTitle(false)
+    .compose([ compose1, compose2
+      // , compose3
+      ]);
 
-    ifrChart.yAxis().ticks(5).tickFormat(d3.format("d"));
-    ifrChart.xAxis().ticks(5).tickFormat(d3.format("d"));
-
-
-
-
-
+  ifrChart.xAxis().ticks(5).tickFormat(d3.format("d"));
 
 
   // ************** DELAYS **************
@@ -235,7 +264,7 @@ function ready(error, delays, ifr_ansp, ifr_monthly) {
     .x(d3.time.scale().domain([minYearDelay - 1, maxYearDelay + 1]))
     .yAxisLabel("Delay per arrival (min)")
     .title(function(d) {
-        return d.x + ": " + numberFormat(d.y) + " of " + numberFormat(d.data.value.avg_delay) + ".";
+      return d.x + ": " + numberFormat(d.y) + " of " + numberFormat(d.value.avg_delay) + ".";
     })
     .renderHorizontalGridLines(true);
   
@@ -289,4 +318,5 @@ function ready(error, delays, ifr_ansp, ifr_monthly) {
 
   // draw!
   dc.renderAll();
+
 }
