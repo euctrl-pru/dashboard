@@ -1,9 +1,18 @@
 'use strict';
 
 var loading = d3.selectAll(".loading");
-var countryChart = dc.pieChart('#country-chart');
+
+// 'Airport ATFM Arrival Delay' group of charts
+// var AD_ATFM_ARRIVAL_DELAY = 'AirportATFMArrivalDelay';
+// var countryChart = dc.rowChart('#country-chart', AD_ATFM_ARRIVAL_DELAY);
+// var seasonChart = dc.pieChart('#season-chart', AD_ATFM_ARRIVAL_DELAY);
+// var yearlyDelaysChart  = dc.barChart('#delay-chart', AD_ATFM_ARRIVAL_DELAY);
+var countryChart = dc.rowChart('#country-chart');
 var seasonChart = dc.pieChart('#season-chart');
-var yearlyDelaysChart  = dc.barChart("#delay-chart");
+var yearlyDelaysChart  = dc.barChart('#delay-chart');
+
+
+// 'IFR Flights' group of charts
 var ifrChart  = dc.compositeChart("#ifr-chart");
 
 var dsv = d3.dsv(";", "text/plain");
@@ -176,17 +185,21 @@ var compose2 = dc.lineChart(ifrChart)
   var totalPerCountry = countryDimension.group().reduceSum(function(d) {return d.total_delay;});
   // print_filter(totalPerCountry);
 
-  countryChart.width(180)
+  countryChart.width(240)
     .height(180)
-    .radius(80)
-    .innerRadius(20)
-    .slicesCap(8) // display only subset, 8, of slices
-    .colors(d3.scale.category20b())
-    // .colors(colorbrewer.Paired[9]) // NOTE: strangely with latest dc.js it does not work
-    .renderTitle(false)
+    .gap(1)
+    .cap(8) // display only subset, 8, of countries according to total delay, see .ordering
+    .colors(d3.scale.category10())
+    // .colors(colorbrewer.Paired[8]) // NOTE: strangely with latest dc.js it does not work
+    // .renderTitle(false)
     .dimension(countryDimension)
-    .group(totalPerCountry);
+    .group(totalPerCountry)
+    .ordering(function(d) { return -d.value; })
+    .labelOffsetX(1)
+    .title(function(d){return d.key + ": " + d3.format(".3s")(d.value) + " total delay (min)";});
 
+  countryChart.xAxis()
+      .tickFormat(d3.format("s"));
 
 
   // DIMENSION: year
