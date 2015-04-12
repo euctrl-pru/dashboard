@@ -2,18 +2,24 @@
 
 var loading = d3.selectAll(".loading");
 
+var CHART_GROUPS = [];
+
 // 'Airport ATFM Arrival Delay' group of charts
-// var AD_ATFM_ARRIVAL_DELAY = 'AirportATFMArrivalDelay';
-// var countryChart = dc.rowChart('#country-chart', AD_ATFM_ARRIVAL_DELAY);
-// var seasonChart = dc.pieChart('#season-chart', AD_ATFM_ARRIVAL_DELAY);
-// var yearlyDelaysChart  = dc.barChart('#delay-chart', AD_ATFM_ARRIVAL_DELAY);
-var countryChart = dc.rowChart('#country-chart');
-var seasonChart = dc.pieChart('#season-chart');
-var yearlyDelaysChart  = dc.barChart('#delay-chart');
+var AD_ATFM_ARRIVAL_DELAY_GROUP = 'Airport ATFMArrival Delay';
+var countryChart = dc.rowChart('#country-chart', AD_ATFM_ARRIVAL_DELAY_GROUP);
+var seasonChart = dc.pieChart('#season-chart', AD_ATFM_ARRIVAL_DELAY_GROUP);
+var yearlyDelaysChart  = dc.barChart('#delay-chart', AD_ATFM_ARRIVAL_DELAY_GROUP);
+
+CHART_GROUPS.push(AD_ATFM_ARRIVAL_DELAY_GROUP);
+// var countryChart = dc.rowChart('#country-chart');
+// var seasonChart = dc.pieChart('#season-chart');
+// var yearlyDelaysChart  = dc.barChart('#delay-chart');
 
 
 // 'IFR Flights' group of charts
-var ifrChart  = dc.compositeChart("#ifr-chart");
+var IFR_FLIGHTS_GROUP = 'IFR Flights';
+var ifrChart  = dc.compositeChart("#ifr-chart", IFR_FLIGHTS_GROUP);
+CHART_GROUPS.push(IFR_FLIGHTS_GROUP);
 
 var dsv = d3.dsv(";", "text/plain");
 var numberFormat = d3.format(".2f");
@@ -105,6 +111,15 @@ function ready(error, delays, ifr_ansp, ifr_monthly) {
   );
   // print_filter(yearlyIfrPerformanceGroup);
   
+var zero = yearlyIfrDimension.group().reduceSum(function(d) {return 0;});
+
+var compose0 = dc.lineChart(ifrChart)
+      .dimension(yearlyIfrDimension)
+      .group(zero, "zero % change")
+      .useRightYAxis(true)
+      .renderTitle(false)
+      .renderLabel(false);
+
 var compose1 =  dc.lineChart(ifrChart)
       .brushOn(false)
       .clipPadding(10)
@@ -113,33 +128,21 @@ var compose1 =  dc.lineChart(ifrChart)
       .renderArea(false)
       .renderDataPoints(true)
       .title(function(d) { return d.key + ': ' + d3.round(d.value.avg, 0) + ' flights';});
-      // .colors(d3.scale.ordinal().range(['blue', 'green', 'yellow']));
-
 
 var compose2 = dc.lineChart(ifrChart)
       .dimension(yearlyIfrDimension)
-      .group(yearlyIfrPerformanceGroup, "YoY % change")
+      .group(yearlyIfrPerformanceGroup, 'YoY % change')
       .valueAccessor(function(d) {return d.value.pc;})
       .title(function(d){return d.key + ': ' + d3.round(d.value.pc, 1) + '%';})
       .renderDataPoints(true)
       .useRightYAxis(true)
       .dashStyle([5,5]);
 
-// var zero = yearlyIfrDimension.group().reduceSum(function(d) {return 0;});
-// print_filter(zero);
-// var compose3 = dc.lineChart(ifrChart)
-//       .dimension(yearlyIfrDimension)
-//       .colors(d3.scale.ordinal().range(['black']))
-//       .group(zero, "zero % change")
-//       .valueAccessor(function(d) {return d.value;})
-//       .renderTitle(false)
-//       .renderLabel(false)
-//       .useRightYAxis(true);
 
 
   ifrChart
-    .width(500)
-    .height(300)
+    .width(400)
+    .height(250)
     .margins({top: 10, right: 50, bottom: 30, left: 40})
     .xAxisLabel("Year")
     .x(d3.time.scale().domain([minYearIfr, maxYearIfr]))
@@ -149,16 +152,15 @@ var compose2 = dc.lineChart(ifrChart)
       .renderHorizontalGridLines(true)
       .legend(dc.legend().x(70).y(10).itemHeight(13).gap(5))
       .brushOn(false)
-    .y(d3.scale.linear().domain([20, 30]))      // NOTE: hardocded knowing the Y range
-    .rightY(d3.scale.linear().domain([-7, +3])) // NOTE: hardocded knowing the Y range
+    .y(d3.scale.linear().domain([24, 29]))      // NOTE: hardocded knowing the Y range
+    .rightY(d3.scale.linear().domain([-17, +15])) // NOTE: hardocded knowing the Y range
     .yAxisLabel("Avg. daily IFR Flights (x1000)")
     .rightYAxisLabel("year over year % change")
-    .colors(d3.scale.ordinal().range(['blue', 'green', 'yellow']))
+    .colors(d3.scale.ordinal().range(['black', 'blue', 'green']))
     .shareColors(true)
     .shareTitle(false)
-    .compose([ compose1, compose2
-      // , compose3
-      ]);
+    .compose([compose0, compose1, compose2]);
+
 
   ifrChart.xAxis().ticks(5).tickFormat(d3.format("d"));
 
@@ -345,7 +347,9 @@ var compose2 = dc.lineChart(ifrChart)
   // d3.selectAll('#select2-version').text("3.5.2");
   // d3.selectAll('#jquery-version').text($.fn.jquery);
 
-  // draw!
-  dc.renderAll();
+  // draw all groups (default one is included too)!
+  for (var i = 0, len = CHART_GROUPS.length; i < len; i++) {
+    dc.renderAll(CHART_GROUPS[i]);
+  }
 
 }

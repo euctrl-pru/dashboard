@@ -76,14 +76,14 @@ keywords: performance, air transport, flights, europe, cost efficiency
 <h2>En Route ATFM Delay</h2>
 <div class="container">
   <h3>Airport ATFM Arrival Delay</h3>
-  <p>Some questions to consider: How do delay patterns differ between <a href="javascript:seasonChart.filterAll();seasonChart.filter('Summer');dc.redrawAll()">summer</a> and <a href="javascript:seasonChart.filterAll();seasonChart.filter('Winter');dc.redrawAll()">winter</a>?
+  <p>Some questions to consider: How do delay patterns differ between <a href="javascript:seasonChart.filterAll('Airport ATFMArrival Delay');seasonChart.filter('Summer');dc.redrawAll('Airport ATFMArrival Delay')">summer</a> and <a href="javascript:seasonChart.filterAll('Airport ATFMArrival Delay');seasonChart.filter('Winter');dc.redrawAll('Airport ATFMArrival Delay')">winter</a>?
   </p>
 
   <div class="row">
     <div id="country-chart" class="dc-chart">
       <strong>Country</strong>
       <div class="loading">Loading...</div>
-      <a class="reset" href="javascript:dc.filterAll();dc.redrawAll();"
+      <a class="reset" href="javascript:dc.filterAll('Airport ATFMArrival Delay');dc.redrawAll('Airport ATFMArrival Delay');"
          style="display: none;">reset</a>
       <div class="clearfix"></div>
     </div>
@@ -91,7 +91,7 @@ keywords: performance, air transport, flights, europe, cost efficiency
     <div id="season-chart" class="dc-chart">
       <strong>Season</strong>
       <div class="loading">Loading...</div>
-      <a class="reset" href="javascript:dc.filterAll();dc.redrawAll();"
+      <a class="reset" href="javascript:dc.filterAll('Airport ATFMArrival Delay');dc.redrawAll('Airport ATFMArrival Delay');"
          style="display: none;">reset</a>
       <div class="clearfix"></div>
     </div>
