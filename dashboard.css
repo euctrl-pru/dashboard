@@ -31,6 +31,14 @@
 	stroke-width: 1px;
 }
 
+/* do NOT fade zero threshold out */
+#ifr-chart.dc-chart g.sub._0 g.stack._0 path.line.fadeout {
+  fill-opacity: 1.0;
+  stroke-opacity: 1.0;
+  stroke-width: 1px;
+}
+
+
 #country-chart g.row text {
   fill: black;
 }
