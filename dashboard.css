@@ -21,13 +21,18 @@
   display: none;
 }
 
+/* hide legend item for zero threshold */
+#ifr-chart g.dc-legend g:first-child {
+	display: none;
+}
+
 #ifr-chart g.sub._0 g.stack._0 path.line {
 	opacity: 0.48;
 	stroke-width: 1px;
 }
 
-#ifr-chart g.dc-legend g:first-child {
-	display: none;
+#country-chart g.row text {
+  fill: black;
 }
 
 /* erase redundant non-data ink */

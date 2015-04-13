@@ -68,8 +68,7 @@ function ready(error, delays, ifr_ansp, ifr_monthly) {
 
 
   var xf_ifrM = crossfilter(ifr_monthly);
-  var all = xf_ifrM.groupAll();
-
+  var all_ifrM = xf_ifrM.groupAll();
 
   // DIMENSION: year
   var yearlyIfrDimension = xf_ifrM.dimension(function(d) {return d.year;});
@@ -180,7 +179,7 @@ var compose2 = dc.lineChart(ifrChart)
   });
 
   var xf_delays = crossfilter(delays);
-  var all = xf_delays.groupAll();
+  var all_delays = xf_delays.groupAll();
 
   // DIMENSION: country
   var countryDimension = xf_delays.dimension(function(d) {return d.country;});
@@ -191,8 +190,7 @@ var compose2 = dc.lineChart(ifrChart)
     .height(180)
     .gap(1)
     .cap(8) // display only subset, 8, of countries according to total delay, see .ordering
-    .colors(d3.scale.category10())
-    // .colors(colorbrewer.Paired[8]) // NOTE: strangely with latest dc.js it does not work
+    .ordinalColors(colorbrewer.Paired[8])
     // .renderTitle(false)
     .dimension(countryDimension)
     .group(totalPerCountry)
